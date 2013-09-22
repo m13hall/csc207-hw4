@@ -12,7 +12,7 @@ public class Fraction {
 			// +--------+
 			public double numerator;
 			public double denominator;
-
+//deal with negatives!!!!!!!!!!!!!!
 			private void simplify(){
 				double ratio = (double) this.numerator/this.denominator;
 				if ((int)ratio == ratio){
@@ -43,7 +43,7 @@ public class Fraction {
 				}else {
 					this.denominator = denom;
 				}
-				simplify();
+				this.simplify();
 			}
 			public Fraction(double value){
 				if ((int) value == value){
@@ -86,7 +86,7 @@ public class Fraction {
 			 */
 			public Fraction add(Fraction additor) {
 				if(this.denominator != additor.denominator){
-					BigInteger = 
+					BigInteger =  
 				}
 				return null; //STUB
 			}//add
@@ -103,29 +103,33 @@ public class Fraction {
 			/**
 			 * multiplies this Fraction number by another Fraction number * takes two Fraction numbers
 			 * returns their product
-			 * Observer/Constructor
+			 * Constructor
 			 */
-			public Fraction multiply(double multiplicand) {
-				return null; //STUB
+			public Fraction multiply(Fraction multiplicand) {
+				Fraction product = new Fraction(
+						this.numerator * multiplicand.numerator, 
+						this.denominator * multiplicand.denominator);
+				return product;
 			}//multiply
+			
+			/**
+			 * Finds the reciporcal of this Fraction number
+			 * Constructor
+			 */
+			public Fraction reciprocal() {
+			 return new Fraction(this.denominator, this.numerator);
+			}//reciprocal
 			
 			/**
 			 * divides Fraction by divisor
 			 * returns their Fraction/divisor
 			 * Observer/Constructor
 			 */
-			public static Fraction divide(double divisor) {
-				return null; //STUB
+			public Fraction divide(Fraction divisor) {
+				 return this.multiply(divisor.reciprocal());
 			}//divide
 
 			
-			/**
-			 * Finds the reciporcal of this Fraction number
-			 * Mutator
-			 */
-			public void reciprocal() {
-			 //STUB
-			}//reciprocal
 
 			/**
 			 * Changes Fraction to the absolute value of this Fraction number
