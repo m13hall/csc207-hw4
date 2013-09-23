@@ -1,5 +1,5 @@
 import java.lang.Math;
-import java.lang.Number.BigInteger;
+import java.math.BigInteger;
 public class Fraction {
 	
 		///adapted from csc207-hw2 by Mira Hall and Matt Dole
@@ -10,50 +10,59 @@ public class Fraction {
 			// +--------+---------------------------------------------------------
 			// | Fields |
 			// +--------+
-			public double numerator;
-			public double denominator;
+			public BigInteger numerator;
+			public BigInteger denominator;
 //deal with negatives!!!!!!!!!!!!!!
-			private void simplify(){
-				double ratio = (double) this.numerator/this.denominator;
-				if ((int)ratio == ratio){
-					this.numerator = (int) ratio;
-					this.denominator = 1;
-				}else {
-					this.denominator = Math.round(this.denominator);
-					this.numerator = Math.round(ratio * this.denominator);
-				}
+			private void simplify() {
+				BigInteger gcd = this.numerator.gcd(this.denominator);
+				this.numerator = this.numerator.divide(gcd);
+				this.denominator = this.denominator.divide(gcd);
 			}
+//			private void simplify(){
+//				double ratio = (double) this.numerator/this.denominator;
+//				if ((int)ratio == ratio){
+//					this.numerator = (int) ratio;
+//					this.denominator = 1;
+//				}else {
+//					this.denominator = Math.round(this.denominator);
+//					this.numerator = Math.round(ratio * this.denominator);
+//				}
+//			}
 			// +--------------+---------------------------------------------------
 			// | Constructors |
 			// +--------------+
-			public Fraction(int num, int denom)throws Exception{
-				this.numerator = num;
+			public Fraction(Integer num, Integer denom)throws Exception{
+				this.numerator = new BigInteger(num.toString());
 				if (denom == 0){
 					throw new Exception("denominator cannot be 0");
 				}else {
-					this.denominator = denom;
+					this.denominator = new BigInteger(denom.toString());
 				}
 				
 			}
 			
 			public Fraction(double num, double denom)throws Exception{
-				this.numerator = num;
+				Integer x = new Integer((int) num);
+				this.numerator = new BigInteger(x.toString());
 				if (denom == 0){
 					throw new Exception("denominator cannot be 0");
 				}else {
-					this.denominator = denom;
+					Integer y = new Integer((int) denom);
+					this.denominator = new BigInteger(y.toString());
 				}
 				this.simplify();
 			}
 			public Fraction(double value){
 				if ((int) value == value){
 					this.numerator = value;
-					this.denominator = 1;
+					this.denominator = new BigInteger("1");
 				}else 
 			}
 			public Fraction(String str)throws Exception{
-				this.numerator = ;
-				if (denom == 0){
+				String[] expressions = StringUtils.splitAt(str, '/');
+				this.numerator = new BigInteger(expressions[0].trim());
+				BigInteger denom = new BigInteger(expressions[2].trim());
+				if (denom.compareTo(new BigInteger("0")) == 0){
 					throw new Exception("denominator cannot be 0");
 				}else {
 					this.denominator = denom;
