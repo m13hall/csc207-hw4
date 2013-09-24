@@ -20,10 +20,10 @@ public class CalculatorInterface {
 			
 			
 			String line = eyes.readLine();
-			pen.println("Your entry:" +line);
+			pen.println("Your entry:" + line);
 			
 			try{
-				String output = FractionCalculator.stub(line);
+				String output = FractionCalculator.evaluate(line).toString();
 				if (output.equals(new String("Q"))){
 					cont = false;
 					pen.println("Quitting!");

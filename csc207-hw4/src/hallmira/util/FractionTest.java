@@ -8,7 +8,6 @@ import java.math.BigInteger;
 
 import org.junit.Test;
 
-import java.lang.Math;
 
 public class FractionTest {
 	
@@ -32,6 +31,24 @@ public class FractionTest {
 		}catch (Exception e){
 		}
 	}
+	
+	/*
+	 * SAM'S TESTS RIGHT HERE TO...
+	 */
+	@Test
+	public void testEquality() throws Exception {
+		assertEquals("1/2 = 2/4", new Fraction(1,2), new Fraction(2,4));
+		Fraction oneEigth = new Fraction(.125);
+		assertEquals(new Fraction(1, 8), oneEigth);//doesn't work
+	}
+	
+	@Test
+	public void testCompare() throws Exception {
+		assertTrue("1/3 < 1/2", ((new Fraction(1,3)).compareTo(new Fraction(1,2))) < 0);
+	}
+	/*
+	 * ...HERE and we still need to make a compare method...
+	 */
 	@Test 
 	public void test_simplify() throws Exception{
 		Fraction oneHalf = new Fraction(4, 8);
@@ -39,7 +56,7 @@ public class FractionTest {
 		Fraction fiveEigths = new Fraction(16.15, 25.84);
 		assertEquals("test simplify", BigInteger.valueOf(2), oneHalf.getDenom());
 		assertEquals("test simplify", BigInteger.valueOf(8), fiveEigths.getNum());
-		//assertEquals(new Fraction(1, 8), oneEigth);//doesn't work
+		assertEquals(new Fraction(1, 8), oneEigth);//doesn't work
 		//assertEquals(true, oneEigth.equals(new Fraction(1,8))); //apparently also doesn't work??
 		//this uses the equals(fraction) one i wrote but inexplicably thinks that true && true is false?????
 		//?????????????????????????????????????????????

@@ -1,8 +1,6 @@
 package hallmira.util;
 import java.lang.Math;
 import java.math.BigInteger;
-import java.lang.Number;
-import java.lang.StringBuffer;
 public class Fraction {
 	
 		///adapted from csc207-hw2 by Mira Hall and Matt Dole
@@ -115,14 +113,18 @@ public class Fraction {
 			public Fraction(String str)throws Exception{
 				String[] expressions = StringUtils.splitAt(str, '/');
 				//what if there's more than one /? should we support that?
-				this.numerator = new BigInteger(expressions[0].trim());
+				if(expressions.length == 1) {
+					this.numerator = new BigInteger(expressions[0]);
+					this.denominator = new BigInteger("1");
+				} else {
+					this.numerator = new BigInteger(expressions[0].trim());
+					BigInteger denom = new BigInteger(expressions[1].trim());
 				
-				BigInteger denom = new BigInteger(expressions[2].trim());
-				
-				if (denom.compareTo(new BigInteger("0")) == 0){
-					throw new Exception("denominator cannot be 0");
-				}else {
-					this.denominator = denom;
+					if (denom.compareTo(new BigInteger("0")) == 0){
+						throw new Exception("denominator cannot be 0");
+					}else {
+						this.denominator = denom;
+					}
 				}
 				this.simplify();
 			}
@@ -132,11 +134,11 @@ public class Fraction {
 			// +---------+
 			
 			//from Sam Rebelsky's eBoard 9/23
-//			public boolean equals(Object other) {
-//		        return (other instanceof Fraction) && 
-//		                (this.equals((Fraction) other));
-//		    } // equals(Object)
-//			
+			public boolean equals(Object other) {
+		        return (other instanceof Fraction) && 
+		                (this.equals((Fraction) other));
+		    } // equals(Object)
+			
 			public boolean equals(Fraction other){
 				boolean num = this.numerator.equals(other.numerator);
 				boolean denom = this.denominator.equals(other.denominator);
@@ -174,10 +176,7 @@ public class Fraction {
 					return new Fraction(newNum, newDenom);
 				
 				} else 
-					return new Fraction(this.numerator.add(additor.numerator), this.denominator);
-					
-					
-				
+					return new Fraction(this.numerator.add(additor.numerator), this.denominator);	
 			}//add
 			/**
 			 * subtracts subtractor from Fraction
@@ -185,8 +184,20 @@ public class Fraction {
 			 * (Observer/Constructor)
 			 *
 			 */
-			public Fraction subtract(double additor) {
-				return null; //STUB
+			public Fraction subtract(Fraction additor) throws Exception{
+				if(this.denominator != additor.denominator){
+					
+					//new Denominator is non-common factors of the product of the denominators
+					BigInteger newDenom = (this.denominator.multiply(additor.denominator));
+					
+					//new Numerator is the old numerator times whatever factors of the LCD the old Denominator missed
+					BigInteger newNum = this.numerator.multiply(additor.denominator)
+					.subtract(additor.numerator.multiply(this.denominator));
+					
+					return new Fraction(newNum, newDenom);
+				
+				} else 
+					return new Fraction(this.numerator.subtract(additor.numerator), this.denominator);
 			}//subtract
 
 			/**
@@ -268,6 +279,12 @@ public class Fraction {
 			public String toString() {
 				return this.numerator.toString() + "/" + this.denominator.toString(); //STUB
 			}//FractionRound
+			
+			public int compareTo(Fraction frac) {
+				BigInteger gcd = this.denominator.gcd(frac.denominator);
+				return this.numerator.multiply(gcd).divide(this.denominator).compareTo( 
+						frac.numerator.multiply(gcd).divide(frac.denominator));
+			}
 			
 
 
