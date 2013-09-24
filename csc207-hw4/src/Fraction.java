@@ -101,7 +101,7 @@ public class Fraction {
 			// +---------+--------------------------------------------------------
 			// | Methods |
 			// +---------+
-			
+			//test
 			public boolean equals(Object other) {
 		        return this.equals((Fraction) other);
 		    } // equals(Object)
