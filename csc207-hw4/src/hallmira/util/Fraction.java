@@ -1,6 +1,8 @@
 package hallmira.util;
 import java.lang.Math;
 import java.math.BigInteger;
+import java.lang.Number;
+import java.lang.StringBuffer;
 public class Fraction {
 	
 		///adapted from csc207-hw2 by Mira Hall and Matt Dole
@@ -61,60 +63,55 @@ public class Fraction {
 				this.denominator = new BigInteger("1");
 			}
 			
-			public Fraction(double num, double denom, double test)throws Exception{
+			public Fraction(double num, double denom)throws Exception{
 				if (denom == 0){
 					throw new Exception("denominator cannot be 0");
 				}else {
 					double ratio = num/denom;
-					Integer iRatio = (int) ratio;
-					if (iRatio == ratio){
-						this.numerator = new BigInteger(iRatio.toString());
-						this.denominator = BigInteger.valueOf(1);
-					}else {
-						Integer iDenom = (int) denom;
-						Integer iNum = (int) (ratio * denom);
+						Integer iDenom = (int)Math.round(denom);
+						Integer iNum = (int) Math.round(ratio * Math.round(denom));
 						this.denominator = new BigInteger(iDenom.toString());
 						this.numerator = new BigInteger(iNum.toString());
-					}
 				}
 				this.simplify();
 			}
-			public Fraction(double num, double denom)throws Exception{
-				Integer x = new Integer((int) num);
-				this.numerator = new BigInteger(x.toString());
-				if (denom == 0){
-					throw new Exception("denominator cannot be 0");
-				}else {
-					Integer y = new Integer((int) denom);
-					this.denominator = new BigInteger(y.toString());
-				}
-				this.simplify();
-			}
+//			public Fraction(double num, double denom)throws Exception{
+//				Integer x = new Integer((int) num);
+//				this.numerator = new BigInteger(x.toString());
+//				if (denom == 0){
+//					throw new Exception("denominator cannot be 0");
+//				}else {
+//					Integer y = new Integer((int) denom);
+//					this.denominator = new BigInteger(y.toString());
+//				}
+//				this.simplify();
+//			}
 			//algorithm from http://www.mathsisfun.com/converting-decimals-fractions.html accessed 9/23
-			
 			public Fraction(double value){
 				Double val = value;
 				String numStr = val.toString();
 				int len = numStr.length() - numStr.indexOf('.') - 1;
-				Double multiplicand = (double) (10 ^ len);
-				Integer noDec = (int) (value * multiplicand.intValue());
+				Integer multiplicand = (int) Math.pow(10, len);
+				Integer noDec = (int) (value * multiplicand);
 				this.numerator = new BigInteger(noDec.toString());
 				this.denominator = new BigInteger(multiplicand.toString());
 				this.simplify();	
 			}
-			public Fraction(double value, int accuracy){
-				Double val = value;
-				String numStr = val.toString();
-				int len = numStr.length() - numStr.indexOf('.') - 1;
-				if (len > accuracy){
-					len = accuracy;
-				}
-				Double multiplicand = (double) (10 ^ len);
-				Integer noDec = (int) (value * multiplicand.intValue());
-				this.numerator = new BigInteger(noDec.toString());
-				this.denominator = new BigInteger(multiplicand.toString());
-				this.simplify();
-			}
+//			public Fraction(double value, boolean round, int accuracy){
+//				Double val = value;
+//				StringBuffer numStr = new StringBuffer(val.toString());
+//				int len = numStr.length() - numStr.indexOf(".") - 1;
+//				numStr.deleteCharAt(numStr.indexOf("."));
+//				if (len > accuracy){
+//					val = new Double((numStr.substring(0, accuracy)).toString());
+//					len = accuracy;
+//				}
+//				Double multiplicand = (double) (10 ^ len);
+//				Integer noDec = (int) (val.doubleValue() * multiplicand.intValue());
+//				this.numerator = new BigInteger(noDec.toString());
+//				this.denominator = new BigInteger(multiplicand.toString());
+//				this.simplify();
+//			}
 			public Fraction(String str)throws Exception{
 				String[] expressions = StringUtils.splitAt(str, '/');
 				//what if there's more than one /? should we support that?
@@ -139,7 +136,12 @@ public class Fraction {
 //		        return (other instanceof Fraction) && 
 //		                (this.equals((Fraction) other));
 //		    } // equals(Object)
-			
+//			
+			public boolean equals(Fraction other){
+				boolean num = this.numerator.equals(other.numerator);
+				boolean denom = this.denominator.equals(other.denominator);
+				return (num && denom);
+			}
 			
 			public BigInteger getNum() {
 				return this.numerator; //STUB
