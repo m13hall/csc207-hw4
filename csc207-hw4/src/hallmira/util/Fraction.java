@@ -13,7 +13,7 @@ public class Fraction {
 			// +--------+
 			public BigInteger numerator;
 			public BigInteger denominator;
-
+			public Fraction threeFourths = new Fraction(3, 4);
 			private void simplify() {
 				//simplify the fraction
 				BigInteger gcd = this.numerator.gcd(this.denominator);
@@ -42,6 +42,11 @@ public class Fraction {
 				this.simplify();
 				
 			}
+			public Fraction(int num)throws Exception{
+				Integer Num = num;
+				this.numerator = new BigInteger(Num.toString());
+				this.denominator = new BigInteger("1");
+			}
 			public Fraction(BigInteger num, BigInteger denom)throws Exception{
 				this.numerator = num;
 				if (denom == BigInteger.valueOf(0)){
@@ -50,6 +55,11 @@ public class Fraction {
 					this.denominator = denom;
 				}
 				this.simplify();
+			}
+			
+			public Fraction(BigInteger num)throws Exception{
+				this.numerator = num;
+				this.denominator = new BigInteger("1");
 			}
 			
 			public Fraction(double num, double denom, double test)throws Exception{
@@ -81,12 +91,21 @@ public class Fraction {
 				}
 				this.simplify();
 			}
-//			public Fraction(double value){
-//				if ((int) value == value){
-//					this.numerator = value;
-//					this.denominator = new BigInteger("1");
-//				}else 
-//			}
+			//algorithm from http://www.mathsisfun.com/converting-decimals-fractions.html accessed 9/23
+			
+			public Fraction(double value){
+				Double val = value;
+				String numStr = val.toString();
+				int len = numStr.length() - numStr.indexOf('.') - 1;
+				Double multiplicand = (double) (10 ^ len);
+				Integer noDec = (int) (value * multiplicand.intValue());
+				this.numerator = new BigInteger(noDec.toString());
+				this.denominator = new BigInteger(multiplicand.toString());
+				this.simplify();
+				
+				
+				
+			}
 			public Fraction(String str)throws Exception{
 				String[] expressions = StringUtils.splitAt(str, '/');
 				//what if there's more than one /? should we support that?
@@ -107,10 +126,10 @@ public class Fraction {
 			// +---------+
 			
 			//from Sam Rebelsky's eBoard 9/23
-			public boolean equals(Object other) {
-		        return (other instanceof Fraction) && 
-		                (this.equals((Fraction) other));
-		    } // equals(Object)
+//			public boolean equals(Object other) {
+//		        return (other instanceof Fraction) && 
+//		                (this.equals((Fraction) other));
+//		    } // equals(Object)
 			
 			
 			public BigInteger getNum() {
@@ -133,17 +152,21 @@ public class Fraction {
 			 */
 			public Fraction add(Fraction additor) throws Exception{
 				if(this.denominator != additor.denominator){
-					BigInteger gcd = this.denominator.gcd(additor.denominator);
+					
 					//new Denominator is non-common factors of the product of the denominators
-					BigInteger newDenom = (this.denominator.multiply(additor.denominator)).divide(gcd);
+					BigInteger newDenom = (this.denominator.multiply(additor.denominator));
+					
 					//new Numerator is the old numerator times whatever factors of the LCD the old Denominator missed
-					BigInteger newNum = (this.numerator.multiply(newDenom.divide(this.denominator)))
-					.add(additor.numerator.multiply(newDenom.divide(additor.denominator)));
+					BigInteger newNum = this.numerator.multiply(additor.denominator)
+					.add(additor.numerator.multiply(this.denominator));
 					
-					return new Fraction(newDenom, newNum);
+					return new Fraction(newNum, newDenom);
+				
+				} else 
+					return new Fraction(this.numerator.add(additor.numerator), this.denominator);
 					
-				}
-				return null; //STUB
+					
+				
 			}//add
 			/**
 			 * subtracts subtractor from Fraction
@@ -203,10 +226,11 @@ public class Fraction {
 			}//absVal
 			
 			/**
-			 * Raise Fraction number to an exponent (Mutator)
+			 * Returns a new Fraction number equal to Fraction raised 
+			 * to an exponent (Constructor)
 			 */
-			public void toPower(double exponent) {
-				//STUB
+			public Fraction toPower(int exponent) throws Exception{
+				return new Fraction(this.numerator.pow(exponent), this.denominator.pow(exponent));
 			} //numeratorExponent
 
 
@@ -214,16 +238,16 @@ public class Fraction {
 			 * Round a Fraction number to the nearest whole (Observer)
 			 * (ie for 3/2 returns 1)
 			 */
-			public int wholePart() {
-				return 0; //STUB
+			public BigInteger wholePart() {
+				return this.numerator.divide(this.denominator); //STUB
 			}//FractionRound
 
 			/**
 			 * Returns the fractional part of a Fraction. (Constructor)
 			 * (ie for 3/2 returns 1/2)
 			 */
-			public Fraction fractionPart() {
-				return null; //STUB
+			public Fraction fractionPart() throws Exception{
+				return new Fraction(this.numerator.mod(this.denominator), this.denominator);
 			}//FractionRound
 			
 			/**
@@ -231,17 +255,9 @@ public class Fraction {
 			 * (ie for 3/2 returns 1/2)
 			 */
 			public String toString() {
-				return null; //STUB
+				return this.numerator.toString() + "/" + this.denominator.toString(); //STUB
 			}//FractionRound
 			
-			/**
-			 * Returns the fractional part of a Fraction. (Constructor)
-			 * (ie for 3/2 returns 1/2)
-			 */
-			public String toString() {
-				return null; //STUB
-			}//FractionRound
 
-			
 
 }

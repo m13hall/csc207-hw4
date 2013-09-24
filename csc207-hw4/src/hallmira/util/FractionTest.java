@@ -9,11 +9,11 @@ import org.junit.Test;
 import java.lang.Math;
 
 public class FractionTest {
-	
-public Fraction threeFourths = Fraction(3, 4);
+
 	@Test
 	public void test_FractionFromBigInts() throws Exception {
-		//assertEquals(true, new Fraction(3, 4).equals(new Object(3, 4)));
+		Fraction threeFourths = new Fraction(3, 4);
+		assertEquals(BigInteger.valueOf(3), threeFourths.getNum());
 	}
 
 }
