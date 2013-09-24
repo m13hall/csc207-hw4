@@ -1,3 +1,4 @@
+package hallmira.util;
 import java.lang.Math;
 import java.math.BigInteger;
 public class Fraction {
@@ -28,12 +29,15 @@ public class Fraction {
 			// +--------------+---------------------------------------------------
 			// | Constructors |
 			// +--------------+
-			public Fraction(Integer num, Integer denom)throws Exception{
-				this.numerator = new BigInteger(num.toString());
+			public Fraction(int num, int denom)throws Exception{
+				Integer Num = num;
+				Integer Denom = denom;
+				
+				this.numerator = new BigInteger(Num.toString());
 				if (denom == 0){
 					throw new Exception("denominator cannot be 0");
 				}else {
-					this.denominator = new BigInteger(denom.toString());
+					this.denominator = new BigInteger(Denom.toString());
 				}
 				this.simplify();
 				
@@ -101,9 +105,11 @@ public class Fraction {
 			// +---------+--------------------------------------------------------
 			// | Methods |
 			// +---------+
-			//test
+			
+			//from Sam Rebelsky's eBoard 9/23
 			public boolean equals(Object other) {
-		        return this.equals((Fraction) other);
+		        return (other instanceof Fraction) && 
+		                (this.equals((Fraction) other));
 		    } // equals(Object)
 			
 			

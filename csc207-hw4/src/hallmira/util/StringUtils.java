@@ -1,3 +1,4 @@
+package hallmira.util;
 
 public class StringUtils {
 
