@@ -15,8 +15,9 @@ public class CalculatorInterface {
 		pen.println("Welcome to the Caluclatador!");
 		boolean cont = true;
 		while (cont){
-			pen.println("Please type your input and hit enter");
 			pen.println("Press Q to quit");
+			pen.println("Please type your input and hit enter");
+			
 			
 			String line = eyes.readLine();
 			pen.println("Your entry:" +line);

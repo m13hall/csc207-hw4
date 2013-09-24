@@ -13,7 +13,6 @@ public class Fraction {
 			// +--------+
 			public BigInteger numerator;
 			public BigInteger denominator;
-			public Fraction threeFourths = new Fraction(3, 4);
 			private void simplify() {
 				//simplify the fraction
 				BigInteger gcd = this.numerator.gcd(this.denominator);
@@ -101,10 +100,20 @@ public class Fraction {
 				Integer noDec = (int) (value * multiplicand.intValue());
 				this.numerator = new BigInteger(noDec.toString());
 				this.denominator = new BigInteger(multiplicand.toString());
+				this.simplify();	
+			}
+			public Fraction(double value, int accuracy){
+				Double val = value;
+				String numStr = val.toString();
+				int len = numStr.length() - numStr.indexOf('.') - 1;
+				if (len > accuracy){
+					len = accuracy;
+				}
+				Double multiplicand = (double) (10 ^ len);
+				Integer noDec = (int) (value * multiplicand.intValue());
+				this.numerator = new BigInteger(noDec.toString());
+				this.denominator = new BigInteger(multiplicand.toString());
 				this.simplify();
-				
-				
-				
 			}
 			public Fraction(String str)throws Exception{
 				String[] expressions = StringUtils.splitAt(str, '/');
