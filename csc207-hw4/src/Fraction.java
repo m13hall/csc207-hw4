@@ -4,7 +4,7 @@ public class Fraction {
 	
 		///adapted from csc207-hw2 by Mira Hall and Matt Dole
 			/**
-			 * A helpful introductory comment that describes the class.
+			 * Numerator carries the sign.
 			 */
 
 			// +--------+---------------------------------------------------------
@@ -12,22 +12,19 @@ public class Fraction {
 			// +--------+
 			public BigInteger numerator;
 			public BigInteger denominator;
-//deal with negatives!!!!!!!!!!!!!!
+
 			private void simplify() {
+				//simplify the fraction
 				BigInteger gcd = this.numerator.gcd(this.denominator);
 				this.numerator = this.numerator.divide(gcd);
 				this.denominator = this.denominator.divide(gcd);
+				
+				//assure that the numerator carries the accurate sign for the whole fraction
+				if (this.denominator.signum() == -1){
+					this.numerator.negate();
+				}
 			}
-//			private void simplify(){
-//				double ratio = (double) this.numerator/this.denominator;
-//				if ((int)ratio == ratio){
-//					this.numerator = (int) ratio;
-//					this.denominator = 1;
-//				}else {
-//					this.denominator = Math.round(this.denominator);
-//					this.numerator = Math.round(ratio * this.denominator);
-//				}
-//			}
+		
 			// +--------------+---------------------------------------------------
 			// | Constructors |
 			// +--------------+
@@ -38,9 +35,37 @@ public class Fraction {
 				}else {
 					this.denominator = new BigInteger(denom.toString());
 				}
+				this.simplify();
 				
 			}
+			public Fraction(BigInteger num, BigInteger denom)throws Exception{
+				this.numerator = num;
+				if (denom == BigInteger.valueOf(0)){
+					throw new Exception("denominator cannot be 0");
+				}else {
+					this.denominator = denom;
+				}
+				this.simplify();
+			}
 			
+			public Fraction(double num, double denom, double test)throws Exception{
+				if (denom == 0){
+					throw new Exception("denominator cannot be 0");
+				}else {
+					double ratio = num/denom;
+					Integer iRatio = (int) ratio;
+					if (iRatio == ratio){
+						this.numerator = new BigInteger(iRatio.toString());
+						this.denominator = BigInteger.valueOf(1);
+					}else {
+						Integer iDenom = (int) denom;
+						Integer iNum = (int) (ratio * denom);
+						this.denominator = new BigInteger(iDenom.toString());
+						this.numerator = new BigInteger(iNum.toString());
+					}
+				}
+				this.simplify();
+			}
 			public Fraction(double num, double denom)throws Exception{
 				Integer x = new Integer((int) num);
 				this.numerator = new BigInteger(x.toString());
@@ -52,30 +77,37 @@ public class Fraction {
 				}
 				this.simplify();
 			}
-			public Fraction(double value){
-				if ((int) value == value){
-					this.numerator = value;
-					this.denominator = new BigInteger("1");
-				}else 
-			}
+//			public Fraction(double value){
+//				if ((int) value == value){
+//					this.numerator = value;
+//					this.denominator = new BigInteger("1");
+//				}else 
+//			}
 			public Fraction(String str)throws Exception{
 				String[] expressions = StringUtils.splitAt(str, '/');
+				//what if there's more than one /? should we support that?
 				this.numerator = new BigInteger(expressions[0].trim());
+				
 				BigInteger denom = new BigInteger(expressions[2].trim());
+				
 				if (denom.compareTo(new BigInteger("0")) == 0){
 					throw new Exception("denominator cannot be 0");
 				}else {
 					this.denominator = denom;
 				}
-				simplify();
+				this.simplify();
 			}
 				
 			// +---------+--------------------------------------------------------
 			// | Methods |
 			// +---------+
 			
+			public boolean equals(Object other) {
+		        return this.equals((Fraction) other);
+		    } // equals(Object)
 			
-			public double getNum() {
+			
+			public BigInteger getNum() {
 				return this.numerator; //STUB
 			}//getNum
 
@@ -83,7 +115,7 @@ public class Fraction {
 			 * Gets the denominator of a Fraction number
 			 * Observer
 			 */
-			public double getDenom() {
+			public BigInteger getDenom() {
 				return this.denominator; //STUB
 			}//getDenom
 			
@@ -93,9 +125,17 @@ public class Fraction {
 			 * (Observer/Constructor)
 			 *
 			 */
-			public Fraction add(Fraction additor) {
+			public Fraction add(Fraction additor) throws Exception{
 				if(this.denominator != additor.denominator){
-					BigInteger =  
+					BigInteger gcd = this.denominator.gcd(additor.denominator);
+					//new Denominator is non-common factors of the product of the denominators
+					BigInteger newDenom = (this.denominator.multiply(additor.denominator)).divide(gcd);
+					//new Numerator is the old numerator times whatever factors of the LCD the old Denominator missed
+					BigInteger newNum = (this.numerator.multiply(newDenom.divide(this.denominator)))
+					.add(additor.numerator.multiply(newDenom.divide(additor.denominator)));
+					
+					return new Fraction(newDenom, newNum);
+					
 				}
 				return null; //STUB
 			}//add
@@ -114,10 +154,10 @@ public class Fraction {
 			 * returns their product
 			 * Constructor
 			 */
-			public Fraction multiply(Fraction multiplicand) {
+			public Fraction multiply(Fraction multiplicand) throws Exception{
 				Fraction product = new Fraction(
-						this.numerator * multiplicand.numerator, 
-						this.denominator * multiplicand.denominator);
+						this.numerator.multiply(multiplicand.numerator), 
+						this.denominator.multiply(multiplicand.denominator));
 				return product;
 			}//multiply
 			
@@ -125,7 +165,7 @@ public class Fraction {
 			 * Finds the reciporcal of this Fraction number
 			 * Constructor
 			 */
-			public Fraction reciprocal() {
+			public Fraction reciprocal() throws Exception{
 			 return new Fraction(this.denominator, this.numerator);
 			}//reciprocal
 			
@@ -134,27 +174,28 @@ public class Fraction {
 			 * returns their Fraction/divisor
 			 * Observer/Constructor
 			 */
-			public Fraction divide(Fraction divisor) {
+			public Fraction divide(Fraction divisor) throws Exception {
 				 return this.multiply(divisor.reciprocal());
 			}//divide
 
-			
 
 			/**
 			 * Changes Fraction to the absolute value of this Fraction number
 			 * Mutator
 			 */
 			public void absVal() {
-			 //STUB
+			 this.numerator.abs();
 			}//absVal
+			
 			/**
 			 *Negates Fraction. If Fraction is negative, changes to positive
 			 *If Fraction is positive, changes to negative
 			 *(Mutator)
 			 */
 			public void negate() {
-				//STUB
+				this.numerator.negate();
 			}//absVal
+			
 			/**
 			 * Raise Fraction number to an exponent (Mutator)
 			 */
